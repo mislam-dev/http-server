@@ -1,6 +1,6 @@
 use super::httpparse::{HttpParse, Request};
 use nix::libc::close;
-use nix::sys::socket::sockopt::ReuseAddr;
+use nix::sys::socket::sockopt::{ReuseAddr, ReusePort};
 use nix::sys::socket::{
     AddressFamily, Backlog, MsgFlags, SockFlag, SockProtocol, SockType, SockaddrIn, accept, bind,
     listen, recv, send, setsockopt, socket,
@@ -45,6 +45,7 @@ impl TcpServer {
         .expect("Failed to start socket");
 
         setsockopt(&server_socket, ReuseAddr, &true).unwrap();
+        setsockopt(&server_socket, ReusePort, &true).unwrap();
 
         if server_socket.as_raw_fd() == -1 {
             println!("invalid socket");
