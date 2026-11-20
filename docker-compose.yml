@@ -1,9 +1,9 @@
 services:
-  dev:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: http-server-dev
+    container_name: http-server
     volumes:
       - .:/app
       - target_cache:/app/target
@@ -12,13 +12,8 @@ services:
     ports:
       - "3000:3000"
     working_dir: /app
-    stdin_open: true
     tty: true
-    cap_add:
-      - SYS_PTRACE
-    security_opt:
-      - seccomp:unconfined
-    command: ["sleep", "infinity"]
+    command: cargo watch -c -w src -d 0.1 -x run
 
 volumes:
   target_cache:

@@ -28,14 +28,15 @@ impl HttpParse {
     pub fn parse_body(raw: &str) -> HashMap<&str, &str> {
         println!("{raw:#?}");
         let mut body: HashMap<&str, &str> = HashMap::new();
-        if raw.len() <= 0 {
+        if raw.is_empty() {
             return body;
         }
 
-        let mut values_iter = raw.split("\r\n").map(|r| r).into_iter();
+        let mut values_iter = raw.split("\r\n");
+
 
         while let Some(value) = values_iter.next() {
-            if value == "" {
+            if value.is_empty() {
                 continue;
             }
             let items: Vec<&str> = value.split(": ").collect();
@@ -50,12 +51,12 @@ impl HttpParse {
         let mut headers: HashMap<&str, &str> = HashMap::new();
         let mut method = "GET";
         let mut path = "/";
-        if raw.len() <= 0 {
+        if raw.is_empty() {
             return ((method, path), headers);
         }
 
-        let mut values_iter = raw.split("\r\n").map(|r| r).into_iter();
-        let first_line: Vec<&str> = values_iter.next().unwrap().split(" ").map(|r| r).collect();
+        let mut values_iter = raw.split("\r\n");
+        let first_line: Vec<&str> = values_iter.next().unwrap().split(" ").collect();
 
         if first_line.len() >= 2 {
             method = first_line[0];
@@ -63,7 +64,7 @@ impl HttpParse {
         }
 
         while let Some(value) = values_iter.next() {
-            if value == "" {
+            if value.is_empty() {
                 continue;
             }
             let items: Vec<&str> = value.split(": ").collect();

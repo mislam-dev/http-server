@@ -45,65 +45,58 @@ ci:
 # Docker / Linux Environment
 # ================================
 
-# Start container and open an interactive bash shell in the integrated terminal
-shell:
-    docker compose up -d dev
-    docker compose exec dev bash
-
-# Watch code changes and stream server logs live inside the Linux container
+# Start server in Linux container with hot reload & stream live logs
 docker-watch:
-    docker compose up -d dev
-    docker compose exec dev cargo watch -c -w src -d 0.1 -x run
+    docker compose up
 
-# Run the project inside the Linux container
-docker-run:
-    docker compose up -d dev
-    docker compose exec dev cargo run
-
-# Run tests inside the Linux container
-docker-test:
-    docker compose exec dev cargo test
-
-# Check code inside the Linux container
-docker-check:
-    docker compose exec dev cargo check
-
-# Run clippy inside the Linux container
-docker-clippy:
-    docker compose exec dev cargo clippy --all-targets --all-features
-
-# Follow live container logs in the terminal
-docker-logs:
-    docker compose logs -f --tail=100 dev
-
-# Start Docker environment in the background
+# Start Linux container in background
 docker-up:
     docker compose up -d
 
-# Stop Docker environment
+# Follow live container logs in the terminal
+docker-logs:
+    docker compose logs -f
+
+# Stop Linux container
 docker-down:
     docker compose down
 
-# Rebuild Docker container
+# Run the project once inside the Linux container
+docker-run:
+    docker compose run --rm --service-ports app cargo run
+
+# Run tests inside the Linux container
+docker-test:
+    docker compose run --rm app cargo test
+
+# Check code inside the Linux container
+docker-check:
+    docker compose run --rm app cargo check
+
+# Run clippy inside the Linux container
+docker-clippy:
+    docker compose run --rm app cargo clippy --all-targets --all-features
+
+# Rebuild Docker image
 docker-build:
     docker compose build
-
-# Kill any hanging server process holding port 3000 inside the container
-docker-kill:
-    docker compose exec dev pkill -9 -f target/debug/http-server || true
 
 # ================================
 # Docker Short Aliases
 # ================================
-d-shell: shell
-d-dev: docker-watch
+up: docker-watch
+up-d: docker-up
+logs: docker-logs
+down: docker-down
+build: docker-build
+
 d-watch: docker-watch
+d-dev: docker-watch
+d-up: docker-up
+d-down: docker-down
+d-logs: docker-logs
 d-run: docker-run
 d-test: docker-test
 d-check: docker-check
 d-clippy: docker-clippy
-d-logs: docker-logs
-d-up: docker-up
-d-down: docker-down
 d-build: docker-build
-d-kill: docker-kill
